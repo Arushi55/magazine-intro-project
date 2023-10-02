@@ -8,7 +8,7 @@ WORKDIR /app
 
 # Install dependencies (dev)
 COPY ["package.json", "package-lock.json*", "./"]
-RUN npm Install
+RUN npm install
 
 # Copy website files to the container
 COPY . .
