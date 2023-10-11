@@ -14,4 +14,4 @@ app.use(express.json());
 app.use("/", route);
 app.use("/page2", route);
 
-export default app
+export default app;
