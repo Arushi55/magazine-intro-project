@@ -15,4 +15,15 @@ export default class UserAccessor {
             throw e;
         }
     }
+
+    static async createUser(userDoc) {
+        try {
+            await Connection.open("users");
+            const user = await User.create(userDoc);
+            console.log(user);
+            return user;
+        } catch (e) {
+            throw e;
+        }
+    }
 }
