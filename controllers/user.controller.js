@@ -1,6 +1,7 @@
 // contains all methods responsible for responding to the different interactions a user can have with the site
 import UserAccessor from "../db_accessor/user.accessor.js";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 export default class UserController {
     static async getAllUsers(req, res) {
@@ -9,7 +10,7 @@ export default class UserController {
     }
 
     static getLoginPage(req, res) {
-        res.render("login_page");
+        res.render("login_page", { error: req.cookies.error });
     }
 
     static getSignUpPage(req, res) {
@@ -22,7 +23,47 @@ export default class UserController {
             await UserAccessor.createUser(req.body);
             res.redirect("/login-page");
         } catch (e) {
-            res.redirect("/");
+            req.error = 999;
+            next();
+        }
+    }
+
+    static async psostLogin(req, res, next) {
+        try {
+            if (!req.cookies.token) {
+                const user = await UserAccessor.getAllUsers(req.body.username);
+                if (user) {
+                    const result = await bcrypt.compare(req.body.password, user.password);
+                    if (result) {
+                        const token = jwt.sign(
+                            {
+                                username: user.username,
+                                email: user.email,
+                                bio: user.bio,
+                                follower: user.followers,
+                                following: user.following,
+                            },
+                            process.env.TOKEN_KEY
+                        );
+                        res.cookie("token", token, {
+                            httpOnly: true,
+                            maxAge: 60 * 60 * 1000,
+                        });
+                        res.redirect("/profile");
+                    } else {
+                        req.error = 400;
+                        next();
+                    }
+                } else {
+                    req.error = 400;
+                    next();
+                }
+            } else {
+                res.redirect("/profile");
+            }
+        } catch (e) {
+            req.error = 400;
+            next();
         }
     }
 }
