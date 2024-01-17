@@ -2,6 +2,7 @@
 import UserAccessor from "../db_accessor/user.accessor.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import Auth from "../auth/authorization.js";
 
 export default class UserController {
     static async getAllUsers(req, res) {
@@ -15,6 +16,21 @@ export default class UserController {
 
     static getSignUpPage(req, res) {
         res.render("sign_up");
+    }
+
+    static getProfile(req, res, next) {
+        if (!req.error) {
+            const user = Auth.getUserInfo(req);
+            res.render("profile", {
+                name: user.username,
+                email: user.email,
+                bio: user.bio,
+                followers: user.followers,
+                following: user.following,
+            });
+        } else {
+            return next();
+        }
     }
 
     static async postSignUp(req, res, next) {
