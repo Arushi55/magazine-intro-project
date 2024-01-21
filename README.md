@@ -1,2 +1,2 @@
 # magazine-intro-project
-The introduction project that we will use to learn websiting.
+The introduction project for the Northeastern Science Magazine to increase proficiency in web development.
