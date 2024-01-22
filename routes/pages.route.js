@@ -19,7 +19,7 @@ router.route("/css/style.css").get((req, res) => {
 router
     .route("/login-page")
     .get(UserController.getLoginPage)
-    .post(UserController.psostLogin, errorHandler);
+    .post(UserController.postLogin, errorHandler);
 
 router
     .route("/sign-up")

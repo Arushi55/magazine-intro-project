@@ -44,10 +44,10 @@ export default class UserController {
         }
     }
 
-    static async psostLogin(req, res, next) {
+    static async postLogin(req, res, next) {
         try {
             if (!req.cookies.token) {
-                const user = await UserAccessor.getAllUsers(req.body.username);
+                const user = await UserAccessor.getUser(req.body.username);
                 if (user) {
                     const result = await bcrypt.compare(req.body.password, user.password);
                     if (result) {
@@ -56,7 +56,7 @@ export default class UserController {
                                 username: user.username,
                                 email: user.email,
                                 bio: user.bio,
-                                follower: user.followers,
+                                followers: user.followers,
                                 following: user.following,
                             },
                             process.env.TOKEN_KEY
